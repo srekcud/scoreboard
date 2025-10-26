@@ -12,26 +12,6 @@
     </div>
 
     <div v-else class="flex-1 flex flex-col gap-4">
-      <!-- Scores -->
-      <div class="grid grid-cols-2 gap-6">
-        <div>
-          <h3 class="text-center font-bold">Score Bleu</h3>
-          <div class="mt-2 grid grid-cols-4 gap-2">
-            <button v-for="b in btns" :key="'b'+b" class="h-16 rounded"
-                    :disabled="s.state?.ended.over" :class="btnDis()"
-                    :style="{background:'#0d1a33'}" @click="act('blue', b)">{{ label(b) }}</button>
-          </div>
-        </div>
-        <div>
-          <h3 class="text-center font-bold">Score Rouge</h3>
-          <div class="mt-2 grid grid-cols-4 gap-2">
-            <button v-for="b in btns" :key="'r'+b" class="h-16 rounded"
-                    :disabled="s.state?.ended.over" :class="btnDis()"
-                    :style="{background:'#531111'}" @click="act('red', b)">{{ label(b) }}</button>
-          </div>
-        </div>
-      </div>
-
       <!-- Pénalités -->
       <div>
         <h3 class="text-center text-lg font-bold">pénalités</h3>
@@ -78,6 +58,26 @@
       <!-- Mini display -->
       <div class="rounded overflow-hidden border border-[#1f2937]" style="height:400px; max-height:400px;">
         <DisplayMini />
+      </div>
+
+      <!-- Scores -->
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-center font-bold">Score Bleu</h3>
+          <div class="mt-2 grid grid-cols-4 gap-2">
+            <button v-for="b in btns" :key="'b'+b" class="h-16 rounded"
+                    :disabled="s.state?.ended.over" :class="btnDis()"
+                    :style="{background:'#0d1a33'}" @click="act('blue', b)">{{ label(b) }}</button>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-center font-bold">Score Rouge</h3>
+          <div class="mt-2 grid grid-cols-4 gap-2">
+            <button v-for="b in btns" :key="'r'+b" class="h-16 rounded"
+                    :disabled="s.state?.ended.over" :class="btnDis()"
+                    :style="{background:'#531111'}" @click="act('red', b)">{{ label(b) }}</button>
+          </div>
+        </div>
       </div>
 
       <!-- Timer: ordre Reset, Start/Stop, +1s. Start/Stop = 80% -->
