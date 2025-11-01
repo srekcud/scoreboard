@@ -119,12 +119,13 @@ function toggle(){ s.state?.timer.running ? s.stop() : s.start() }
 function add1s(){ s.socket?.emit('timer:add', { ms: 1000 }) }
 function btnDis(){ return s.state?.ended.over ? 'opacity-40 cursor-not-allowed' : '' }
 
-let hbInt: any
-onMounted(async ()=>{
-  hbInt = setInterval(()=> s.hb(), 2000)
-  if (s.pinOk && !s.controller) {
-    try { await s.claimControl() } catch {}
-  }
+onMounted(() => {
+  pullInt = setInterval(() => s.socket?.emit('state:pull'), 1500)
+  document.addEventListener('visibilitychange', vis)
 })
-onUnmounted(()=> clearInterval(hbInt))
+onUnmounted(() => {
+  clearInterval(pullInt)
+  document.removeEventListener('visibilitychange', vis)
+})
+function vis(){ if (document.visibilityState==='visible') s.socket?.emit('state:pull') }
 </script>
