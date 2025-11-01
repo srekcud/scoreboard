@@ -1,45 +1,48 @@
 <!-- web/src/views/Control.vue -->
 <template>
-  <div class="w-screen h-screen bg-[#0b0f16] text-white p-4 flex flex-col gap-3">
+  <div class="w-screen h-screen bg-[#0b0f16] text-white p-4 flex flex-col gap-3 overflow-hidden">
+    <!-- Barre du haut -->
     <div class="flex items-center justify-between">
-      <div class="text-sm text-gray-400">Match: {{ s.state?.matchId.slice(0,8) }}</div>
+      <div class="text-sm text-gray-400">Match: {{ s.state?.matchId?.slice(0,8) }}</div>
       <button class="px-3 py-2 rounded bg-[#1f2937]" @click="$router.push('/config')">Config</button>
     </div>
 
+    <!-- Authentification PIN -->
     <div v-if="!pinOk" class="flex-1 flex items-center justify-center gap-3">
       <input v-model="pin" type="password" placeholder="PIN" class="px-3 py-2 rounded bg-[#111827] border border-[#374151]" />
       <button class="px-4 py-2 rounded bg-blue-600" @click="login">Entrer</button>
     </div>
 
-    <div v-else class="flex-1 flex flex-col gap-4">
+    <!-- Corps -->
+    <div v-else class="flex-1 flex flex-col gap-4 overflow-hidden">
       <!-- Pénalités -->
       <div>
         <h3 class="text-center text-lg font-bold">pénalités</h3>
 
-        <template v-if="s.state?.penaltyVisibility.C1">
+        <template v-if="s.state?.penaltyVisibility?.C1">
           <div class="mt-3 grid grid-cols-3 items-center">
             <div class="flex justify-center gap-2">
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C1',+1)">+</button>
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C1',-1)">−</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C1',+1)">+</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C1',-1)">−</button>
             </div>
             <div class="text-center text-[#bbbbbb] font-bold">C1</div>
             <div class="flex justify-center gap-2">
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C1',+1)">+</button>
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C1',-1)">−</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C1',+1)">+</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C1',-1)">−</button>
             </div>
           </div>
         </template>
 
-        <template v-if="s.state?.penaltyVisibility.C2">
+        <template v-if="s.state?.penaltyVisibility?.C2">
           <div class="mt-3 grid grid-cols-3 items-center">
             <div class="flex justify-center gap-2">
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C2',+1)">+</button>
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C2',-1)">−</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C2',+1)">+</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#0d1a33'}" @click="pen('blue','C2',-1)">−</button>
             </div>
             <div class="text-center text-[#bbbbbb] font-bold">C2</div>
             <div class="flex justify-center gap-2">
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C2',+1)">+</button>
-              <button class="px-6 py-3 rounded" :disabled="s.state?.ended.over" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C2',-1)">−</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C2',+1)">+</button>
+              <button class="px-6 py-3 rounded" :disabled="ended" :class="btnDis()" :style="{background:'#531111'}" @click="pen('red','C2',-1)">−</button>
             </div>
           </div>
         </template>
@@ -49,48 +52,55 @@
       <div>
         <h3 class="text-center text-lg font-bold">Senshu</h3>
         <div class="mt-2 flex items-center justify-center gap-4">
-          <button class="px-6 py-3 rounded" style="background:#0048b8" :disabled="s.state?.ended.over" :class="btnDis()" @click="s.setSenshu('blue')">Bleu</button>
-          <button class="px-6 py-3 rounded" style="background:#1f2937" :disabled="s.state?.ended.over" :class="btnDis()" @click="s.setSenshu(null)">Aucune</button>
-          <button class="px-6 py-3 rounded" style="background:#b80000" :disabled="s.state?.ended.over" :class="btnDis()" @click="s.setSenshu('red')">Rouge</button>
+          <button class="px-6 py-3 rounded" style="background:#0048b8" :disabled="ended" :class="btnDis()" @click="setSenshu('blue')">Bleu</button>
+          <button class="px-6 py-3 rounded" style="background:#1f2937" :disabled="ended" :class="btnDis()" @click="setSenshu(null)">Aucune</button>
+          <button class="px-6 py-3 rounded" style="background:#b80000" :disabled="ended" :class="btnDis()" @click="setSenshu('red')">Rouge</button>
         </div>
       </div>
 
-      <!-- Mini display -->
-      <div class="rounded overflow-hidden border border-[#1f2937]" style="height:400px; max-height:400px;">
-        <DisplayMini />
+      <!-- Mini display (visuel du zip, inchangé) -->
+      <div class="space-y-2">
+        <div class="flex justify-end">
+          <button class="px-3 py-1 rounded bg-[#1f2937]" @click="pull">Rafraîchir</button>
+        </div>
+        <div class="rounded overflow-hidden border border-[#1f2937]" style="height:400px; max-height:400px;">
+          <DisplayMini />
+        </div>
       </div>
 
-      <!-- Scores -->
-      <div class="grid grid-cols-2 gap-6">
-        <div>
-          <h3 class="text-center font-bold">Score Bleu</h3>
-          <div class="mt-2 grid grid-cols-4 gap-2">
-            <button v-for="b in btns" :key="'b'+b" class="h-16 rounded"
-                    :disabled="s.state?.ended.over" :class="btnDis()"
-                    :style="{background:'#0d1a33'}" @click="act('blue', b)">{{ label(b) }}</button>
+      <!-- Scores (entre mini et timer) -->
+      <div>
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-center font-bold">Score Bleu</h3>
+            <div class="mt-2 grid grid-cols-4 gap-2">
+              <button v-for="b in btns" :key="'b'+b" class="h-16 rounded"
+                      :disabled="ended" :class="btnDis()" :style="{background:'#0d1a33'}"
+                      @click="act('blue', b)">{{ label(b) }}</button>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-center font-bold">Score Rouge</h3>
+            <div class="mt-2 grid grid-cols-4 gap-2">
+              <button v-for="b in btns" :key="'r'+b" class="h-16 rounded"
+                      :disabled="ended" :class="btnDis()" :style="{background:'#531111'}"
+                      @click="act('red', b)">{{ label(b) }}</button>
+            </div>
           </div>
         </div>
-        <div>
-          <h3 class="text-center font-bold">Score Rouge</h3>
-          <div class="mt-2 grid grid-cols-4 gap-2">
-            <button v-for="b in btns" :key="'r'+b" class="h-16 rounded"
-                    :disabled="s.state?.ended.over" :class="btnDis()"
-                    :style="{background:'#531111'}" @click="act('red', b)">{{ label(b) }}</button>
-          </div>
-        </div>
       </div>
 
-      <!-- Timer: ordre Reset, Start/Stop, +1s. Start/Stop = 80% -->
+      <!-- Timer: Reset | Start/Stop (80%) | +1s -->
       <div class="mt-auto pt-2">
         <h3 class="text-center text-lg font-bold">Timer</h3>
         <div class="mt-2 flex gap-2 items-stretch">
-          <button class="h-16 rounded bg-[#374151] flex items-center justify-center basis-[10%]" title="Reset" @click="s.reset()">
+          <button class="h-16 rounded bg-[#374151] flex items-center justify-center basis-[10%]" title="Reset" @click="resetMatch">
             <IconReset />
           </button>
           <button class="h-16 rounded bg-[#374151] text-xl font-bold basis-[80%]"
-                  :disabled="s.state?.ended.over" :class="btnDis()" @click="toggle()">START/STOP</button>
+                  :disabled="ended" :class="btnDis()" @click="toggle()">START/STOP</button>
           <button class="h-16 rounded bg-[#374151] text-xl font-bold basis-[10%]"
-                  :disabled="s.state?.ended.over" :class="btnDis()" @click="add1s()">+1s</button>
+                  :disabled="ended" :class="btnDis()" @click="add1s()">+1s</button>
         </div>
       </div>
     </div>
@@ -106,26 +116,46 @@ import DisplayMini from './DisplayMini.vue'
 const s = useStore()
 const pin = ref('')
 const pinOk = computed(()=> s.pinOk)
+const ended = computed(()=> !!s.state?.ended?.over)
 const btns = [1,2,3,-1] as const
 
 async function login(){
-  await s.connect('control', pin.value)
+  await s.connect('control', pin.value)   // même origine que le web
   await s.claimControl()
+  pull()
 }
-function label(b:1|2|3|-1){ return b>0? `+${b}` : '−1' }
-function act(side:Side, b:1|2|3|-1){ s.addScore(side, b) }
-function pen(side:Side, cat:'C1'|'C2', d:1|-1){ s.addPenalty(side, cat, d) }
-function toggle(){ s.state?.timer.running ? s.stop() : s.start() }
-function add1s(){ s.socket?.emit('timer:add', { ms: 1000 }) }
-function btnDis(){ return s.state?.ended.over ? 'opacity-40 cursor-not-allowed' : '' }
 
-onMounted(() => {
-  pullInt = setInterval(() => s.socket?.emit('state:pull'), 1500)
-  document.addEventListener('visibilitychange', vis)
+function label(b:1|2|3|-1){ return b>0? `+${b}` : '−1' }
+function btnDis(){ return ended.value ? 'opacity-40 cursor-not-allowed' : '' }
+
+function pull(){ s.socket?.emit('state:pull') }
+
+// Actions → toujours suivi d’un pull pour fiabiliser le mini
+function act(side:Side, b:1|2|3|-1){ s.addScore(side, b); pull() }
+function pen(side:Side, cat:'C1'|'C2', d:1|-1){ s.addPenalty(side, cat, d); pull() }
+function setSenshu(side:Side|null){ s.setSenshu(side); pull() }
+function toggle(){ s.state?.timer?.running ? s.stop() : s.start(); pull() }
+function add1s(){ s.socket?.emit('timer:add', { ms: 1000 }); pull() }
+function resetMatch(){ s.reset(); pull() }
+
+// Sync mini-display: intervalle + focus + connect/reconnect
+let syncInt: any
+const onVisible = () => { if (document.visibilityState === 'visible') pull() }
+function wireSocketHooks(){
+  if (!s.socket) return
+  s.socket.off('connect'); s.socket.off('reconnect')
+  s.socket.on('connect', pull)
+  s.socket.on('reconnect', pull)
+}
+
+onMounted(()=>{
+  // Pull périodique 1.5 s pour rattraper toute frame perdue
+  syncInt = setInterval(()=> { s.hb(); pull(); }, 1500)
+  wireSocketHooks()
+  document.addEventListener('visibilitychange', onVisible)
 })
-onUnmounted(() => {
-  clearInterval(pullInt)
-  document.removeEventListener('visibilitychange', vis)
+onUnmounted(()=>{
+  clearInterval(syncInt)
+  document.removeEventListener('visibilitychange', onVisible)
 })
-function vis(){ if (document.visibilityState==='visible') s.socket?.emit('state:pull') }
 </script>
