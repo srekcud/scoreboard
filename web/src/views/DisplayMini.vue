@@ -48,7 +48,6 @@ import { useStore, type Side } from '../store'
 import SevenSegDisplay from '../components/SevenSegDisplay.vue'
 
 const s = useStore()
-if (!s.socket) s.connect('display')
 const state = computed(()=> s.state)
 
 function fmt2(n:number){ return String(Math.max(0, Math.min(99, n))).padStart(2,'0') }

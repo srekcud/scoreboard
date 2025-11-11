@@ -121,7 +121,13 @@ function btnDis(){ return s.state?.ended.over ? 'opacity-40 cursor-not-allowed' 
 
 let hbInt: any
 onMounted(async ()=>{
-  hbInt = setInterval(()=> s.hb(), 2000)
+  if (hbInt) clearInterval(hbInt)
+  hbInt = setInterval(()=> {
+    if (s.socket?.connected) {
+      s.hb()
+    }
+  },2000)
+
   if (s.pinOk && !s.controller) {
     try { await s.claimControl() } catch {}
   }
